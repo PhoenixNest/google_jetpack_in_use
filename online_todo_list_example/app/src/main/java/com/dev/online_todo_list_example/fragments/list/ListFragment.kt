@@ -17,6 +17,7 @@ import com.dev.online_todo_list_example.databinding.FragmentListBinding
 import com.dev.online_todo_list_example.fragments.ShareViewModel
 import com.dev.online_todo_list_example.fragments.list.adapter.RVAdapter
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.LandingAnimator
 
 class ListFragment : Fragment() {
 
@@ -64,6 +65,12 @@ class ListFragment : Fragment() {
 
         recyclerView.adapter = rvAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+
+        /* ======================== Third-party Extension ======================== */
+        // Use Recyclerview-Animators
+        recyclerView.itemAnimator = LandingAnimator().apply {
+            addDuration = 300
+        }
 
         // Swiper to Delete
         setUpRecyclerViewSwiperToDelete(recyclerView)

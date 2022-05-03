@@ -8,7 +8,7 @@ plugins {
     // Room
     id 'kotlin-kapt'
 
-    // Safe Agrs
+    // SafeArgs
     id 'androidx.navigation.safeargs.kotlin'
 }
 
@@ -69,13 +69,17 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
 
     // Lifecycle
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
 
     // Room
-    implementation "androidx.room:room-runtime:2.4.2"
-    implementation "androidx.room:room-ktx:2.4.2"
-    annotationProcessor "androidx.room:room-compiler:2.4.2"
-    androidTestImplementation "androidx.room:room-testing:2.4.2"
-    kapt "androidx.room:room-compiler:2.4.2"
+    implementation 'androidx.room:room-runtime:2.4.2'
+    implementation 'androidx.room:room-ktx:2.4.2'
+    annotationProcessor 'androidx.room:room-compiler:2.4.2'
+    androidTestImplementation 'androidx.room:room-testing:2.4.2'
+    kapt 'androidx.room:room-compiler:2.4.2'
+
+    /* ======================== Third-party Extension ======================== */
+    // Recyclerview-Animators
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
 }

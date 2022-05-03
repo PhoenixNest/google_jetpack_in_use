@@ -2,6 +2,7 @@ package com.dev.online_todo_list_example.fragments.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.online_todo_list_example.data.models.ToDoData
 import com.dev.online_todo_list_example.databinding.RowItemBinding
@@ -17,9 +18,19 @@ class RVAdapter : RecyclerView.Adapter<RVAdapter.MyViewHolder>() {
     var dataList = emptyList<ToDoData>()
 
     fun setData(toDoData: List<ToDoData>) {
+        // Calculate the list diff
+        val rvDiffUtil = RVDiffUtil(
+            oldList = dataList,
+            newList = toDoData
+        )
+
+        val rvDiffUtilResult = DiffUtil.calculateDiff(rvDiffUtil)
+
+        // Setup new DataList
         this.dataList = toDoData
 
-        notifyDataSetChanged()
+        // Binding the DiffUtil with RVAdapter
+        rvDiffUtilResult.dispatchUpdatesTo(this)
     }
 
     class MyViewHolder(
