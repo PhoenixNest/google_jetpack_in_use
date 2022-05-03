@@ -9,18 +9,24 @@ interface ToDoDao {
     @Query("select * from todo_table order by id asc")
     fun getAllData(): LiveData<List<ToDoData>>
 
-    // If we insert the duplicate data, let the DB choose ignore and force insert it.
+    // If we insert the duplicate data, let the Database choose ignore and force insert it.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     // Use "suspend" keyword to let the system know this is an Kotlin coroutine function.
-    // is recommend to use "suspend" keyword in all the DB function
+    // Recommend to use "suspend" keyword in all the Database function.
     suspend fun insertData(toDoData: ToDoData)
 
     @Update
+    // Use "suspend" keyword to let the system know this is an Kotlin coroutine function.
+    // Recommend to use "suspend" keyword in all the Database function.
     suspend fun updateData(toDoData: ToDoData)
 
     @Delete
+    // Use "suspend" keyword to let the system know this is an Kotlin coroutine function.
+    // Recommend to use "suspend" keyword in all the Database function.
     suspend fun deleteItem(toDoData: ToDoData)
 
     @Query("delete from todo_table")
+    // Use "suspend" keyword to let the system know this is an Kotlin coroutine function.
+    // Recommend to use "suspend" keyword in all the Database function.
     suspend fun deleteAll()
 }

@@ -19,28 +19,28 @@ class ToDoViewModel(application: Application) : AndroidViewModel(application) {
     val getAllData: LiveData<List<ToDoData>> = repository.getAllData
 
     fun insertData(toDoData: ToDoData) {
-        // use CoroutineScope to process the function in the background
+        // Use CoroutineScope to process the function in the background.
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertData(toDoData)
         }
     }
 
     fun updateData(toDoData: ToDoData) {
-        // use CoroutineScope to process the function in the background
+        // Use CoroutineScope to process the function in the background.
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateData(toDoData)
         }
     }
 
     fun deleteItem(toDoData: ToDoData) {
-        // use CoroutineScope to process the function in the background
+        // Use CoroutineScope to process the function in the background.
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteItem(toDoData)
         }
     }
 
     fun deleteAll() {
-        // use CoroutineScope to process the function in the background
+        // Use CoroutineScope to process the function in the background.
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAll()
         }

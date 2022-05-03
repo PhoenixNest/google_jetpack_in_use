@@ -11,44 +11,48 @@ import androidx.navigation.fragment.navArgs
 import com.dev.online_todo_list_example.R
 import com.dev.online_todo_list_example.data.models.ToDoData
 import com.dev.online_todo_list_example.data.viewmodel.ToDoViewModel
+import com.dev.online_todo_list_example.databinding.FragmentUpdateBinding
 import com.dev.online_todo_list_example.fragments.ShareViewModel
 import kotlinx.android.synthetic.main.fragment_update.*
-import kotlinx.android.synthetic.main.fragment_update.view.*
 
 class UpdateFragment : Fragment() {
+
+    private var _binding: FragmentUpdateBinding? = null
+
+    // Make sure we can get the binding Layout
+    private val binding get() = _binding!!
+
     // get the result
     private val args by navArgs<UpdateFragmentArgs>()
 
-    private val mToDoViewModel: ToDoViewModel by viewModels()
-
+    // lazy put the ViewModel
     private val mShareViewModel: ShareViewModel by viewModels()
+    private val mToDoViewModel: ToDoViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_update, container, false)
+    ): View {
+        // Data Binding
+        _binding = FragmentUpdateBinding.inflate(inflater, container, false)
+
+        // Set up lifecycleOwner to let the LiveData observe data change
+        binding.lifecycleOwner = this
+
+        // Bind layout variable
+        binding.args = args
+
+        // Spinner Item Selected Listener
+        binding.spCurrentPriorities.onItemSelectedListener = mShareViewModel.listener
 
         // Set Menu
         setHasOptionsMenu(true)
 
-        // initView
-        initView(view)
-
-        return view
+        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.update_fragment_menu, menu)
-    }
-
-    private fun initView(view: View) {
-        view.edt_current_title.setText(args.currentItem.title)
-        view.sp_current_priorities.setSelection(mShareViewModel.parsePriorityToInt(args.currentItem.priority))
-        view.edt_current_description.setText(args.currentItem.description)
-
-        view.sp_current_priorities.onItemSelectedListener = mShareViewModel.listener
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -84,6 +88,7 @@ class UpdateFragment : Fragment() {
 
             // Navigate back
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+
         } else {
             Toast.makeText(
                 requireContext(),
@@ -111,5 +116,12 @@ class UpdateFragment : Fragment() {
 
         // show the dialog
         builder.create().show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        // avoid OOM
+        _binding = null
     }
 }

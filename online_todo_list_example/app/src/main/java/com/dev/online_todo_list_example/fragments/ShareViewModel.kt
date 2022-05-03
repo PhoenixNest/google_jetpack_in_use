@@ -13,13 +13,17 @@ import com.dev.online_todo_list_example.data.models.ToDoData
 
 class ShareViewModel(application: Application) : AndroidViewModel(application) {
 
-    val emptyDatabase: MutableLiveData<Boolean> = MutableLiveData(true)
+    /* ======================== ListFragment ======================== */
+
+    val isDatabaseEmpty: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun checkIfDatabaseEmpty(toDoData: List<ToDoData>) {
-        // if the toDoDataList is Empty, that means there are nothing in Database,
-        // set the emptyDatabase value to True or False
-        emptyDatabase.value = toDoData.isEmpty()
+        // If the toDoDataList is Empty, that means there are nothing in Database,
+        // Set the emptyDatabase value to True or False
+        isDatabaseEmpty.value = toDoData.isEmpty()
     }
+
+    /* ======================== Add/Update Fragment ======================== */
 
     // Spinner: OnItemSelectedListener
     val listener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -32,8 +36,8 @@ class ShareViewModel(application: Application) : AndroidViewModel(application) {
             id: Long
         ) {
             when (position) {
-                // force change the display Spinner item as TextView,
-                // then change its textColor to match HIGH, MEDIUM, LOW level
+                // Force change the display Spinner item as TextView,
+                // Then change its textColor to match HIGH, MEDIUM, LOW level
                 0 -> (parent?.getChildAt(0) as TextView)
                     .setTextColor(ContextCompat.getColor(application, R.color.red))
 
@@ -46,12 +50,12 @@ class ShareViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // check the user input
+    // Check the user Input
     fun verifyDataFromUser(title: String, description: String): Boolean {
         return !(title.isEmpty() || description.isEmpty())
     }
 
-    // check the priority level when Add the item
+    // Check the Priority level when Add the item into Database
     fun parsePriority(priority: String): Priority {
         return when (priority) {
             "High Priority" -> Priority.HIGH
@@ -59,15 +63,6 @@ class ShareViewModel(application: Application) : AndroidViewModel(application) {
             "Low Priority" -> Priority.LOW
 
             else -> Priority.LOW
-        }
-    }
-
-    // check the priority level when Update the item
-    fun parsePriorityToInt(priority: Priority): Int {
-        return when (priority) {
-            Priority.HIGH -> 0
-            Priority.MEDIUM -> 1
-            Priority.LOW -> 2
         }
     }
 }

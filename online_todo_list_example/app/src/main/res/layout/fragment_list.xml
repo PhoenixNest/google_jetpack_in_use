@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="mShareViewModel"
+            type="com.dev.online_todo_list_example.fragments.ShareViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +47,7 @@
             android:id="@+id/no_data_imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:checkEmptyDatabase="@{mShareViewModel.isDatabaseEmpty}"
             android:src="@drawable/ic_no_data"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:alpha="0.5"
-            android:text="No Data"
+            android:checkEmptyDatabase="@{mShareViewModel.isDatabaseEmpty}"
+            android:text="@string/no_data"
             android:textSize="16sp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/no_data_imageView"

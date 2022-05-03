@@ -13,16 +13,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val fragment = supportFragmentManager.findFragmentById(R.id.navHostFragment)
+        val navHostFragment = fragment as NavHostFragment
         navController = navHostFragment.navController
 
-        // set up the default AppBar to auto change the correct label
+        // Set up the default AppBar to auto change the correct label
         setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        // set up the correct navUp() action
+        // Set up the correct navUp() action
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

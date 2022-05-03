@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "todo_table")
-// in order to pass the object value into fragment, we yse safe args
-// so change to Data object into Parcelable that we can pass it
+// We use SafeArgs to pass the object value into fragment,
+// change to Data object into Parcelable that we can pass it between Activity/Fragment
 @Parcelize
 data class ToDoData(
     @PrimaryKey(autoGenerate = true)

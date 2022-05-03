@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.dev.online_todo_list_example.data.ToDoDao
 import com.dev.online_todo_list_example.data.models.ToDoData
 
+// Use Repository to handle the data between ViewModel and Database.
 class ToDoRepository(private val toDoDao: ToDoDao) {
     val getAllData: LiveData<List<ToDoData>> = toDoDao.getAllData()
 
