@@ -94,7 +94,7 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
                 rvAdapter.notifyItemChanged(viewHolder.adapterPosition)
 
                 // Undo delete
-                undoDeleteItem(viewHolder.itemView, deleteItem, viewHolder.adapterPosition)
+                undoDeleteItem(viewHolder.itemView, deleteItem)
             }
         }
 
@@ -103,7 +103,7 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun undoDeleteItem(view: View, deleteItem: ToDoData, position: Int) {
+    private fun undoDeleteItem(view: View, deleteItem: ToDoData) {
         val snackBar = Snackbar.make(
             view,
             "Deleted '${deleteItem.title}'",
@@ -114,9 +114,6 @@ class ListFragment : Fragment(), SearchView.OnQueryTextListener {
         snackBar.setAction("Undo") {
             // Restore the deleted item
             mToDoViewModel.insertData(deleteItem)
-
-            // Inform the adapter
-            rvAdapter.notifyItemChanged(position)
         }
 
         // Show the SnackBar
