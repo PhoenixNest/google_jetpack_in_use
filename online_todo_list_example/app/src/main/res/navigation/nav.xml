@@ -34,7 +34,9 @@
             android:id="@+id/action_updateFragment_to_listFragment"
             app:destination="@id/listFragment"
             app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left" />
+            app:exitAnim="@anim/to_left"
+            app:popUpTo="@id/listFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="currentItem"
             app:argType="com.dev.online_todo_list_example.data.models.ToDoData" />
@@ -48,6 +50,8 @@
             android:id="@+id/action_addFragment_to_listFragment"
             app:destination="@id/listFragment"
             app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right" />
+            app:exitAnim="@anim/to_right"
+            app:popUpTo="@id/listFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
