@@ -4,12 +4,13 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.dev.online_todo_list_example.R
 import com.dev.online_todo_list_example.data.models.ToDoData
 import com.dev.online_todo_list_example.data.viewmodel.ToDoViewModel
@@ -19,7 +20,7 @@ import com.dev.online_todo_list_example.fragments.list.adapter.RVAdapter
 import com.google.android.material.snackbar.Snackbar
 import jp.wasabeef.recyclerview.animators.LandingAnimator
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListBinding? = null
 
@@ -60,11 +61,17 @@ class ListFragment : Fragment() {
         return binding.root
     }
 
+    /* ======================== RecyclerView ======================== */
     private fun setupRecyclerView() {
         val recyclerView = binding.recyclerView
 
         recyclerView.adapter = rvAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        // recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        // Change the default Layout of RecyclerView
+        recyclerView.layoutManager = StaggeredGridLayoutManager(
+            2,
+            StaggeredGridLayoutManager.VERTICAL
+        )
 
         /* ======================== Third-party Extension ======================== */
         // Use Recyclerview-Animators
@@ -116,17 +123,75 @@ class ListFragment : Fragment() {
         snackBar.show()
     }
 
+    /* ======================== [Top Action Bar] ======================== */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.list_fragment_menu, menu)
+
+        // Search-Action
+        val search = menu.findItem(R.id.menu_search)
+
+        // Force change the type of the actionView into SearchView
+        val searchView = search.actionView as? SearchView
+
+        // Customize the SearchView
+        searchView?.isSubmitButtonEnabled = true
+
+        // Implement the SearchListener
+        searchView?.setOnQueryTextListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_delete_all) {
-            confirmRemoval()
+        when (item.itemId) {
+            R.id.menu_delete_all -> confirmRemoval()
+
+            // Sort By High Priority
+            R.id.menu_priority_high -> {
+                mToDoViewModel.sortByHighPriority.observe(this, Observer {
+                    rvAdapter.setData(it)
+                })
+            }
+
+            // Sort By Low Priority
+            R.id.menu_priority_low -> {
+                mToDoViewModel.sortByLowPriority.observe(this, Observer {
+                    rvAdapter.setData(it)
+                })
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    /* ======================== [Top Action Bar] - Search ======================== */
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+
+        return true
+    }
+
+    private fun searchThroughDatabase(query: String) {
+        // Add "%" to search in Database easily.
+        // The SQL-Query will like this: "select * from todo_table where title like %title%"
+        val searchQuery = "%$query%"
+
+        mToDoViewModel.searchDatabase(searchQuery).observe(this, Observer {
+            it?.let {
+                // "let" will auto set the last line as its return value
+                rvAdapter.setData(it)
+            }
+        })
+    }
+
+    /* ======================== [Top Action Bar] - Delete All ======================== */
     // Show AlertDialog to confirm removal of all items from database table
     private fun confirmRemoval() {
         val builder = AlertDialog.Builder(requireContext())

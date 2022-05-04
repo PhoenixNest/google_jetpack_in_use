@@ -34,6 +34,7 @@ class AddFragment : Fragment() {
         return view
     }
 
+    /* ======================== [Top Action Bar] ======================== */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_fragment_menu, menu)
     }
@@ -46,6 +47,7 @@ class AddFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    /* ======================== [Top Action Bar] - Add ======================== */
     private fun insertDataToDatabase() {
         val mTitle = edt_title.text.toString()
         val mPriority = sp_priorities.selectedItem.toString()

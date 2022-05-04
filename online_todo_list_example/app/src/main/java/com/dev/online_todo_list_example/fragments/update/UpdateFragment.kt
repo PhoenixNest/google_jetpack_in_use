@@ -51,6 +51,7 @@ class UpdateFragment : Fragment() {
         return binding.root
     }
 
+    /* ======================== [Top Action Bar] ======================== */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.update_fragment_menu, menu)
     }
@@ -64,6 +65,7 @@ class UpdateFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    /* ======================== [Top Action Bar] - Save ======================== */
     private fun updateItem() {
         val title = edt_current_title.text.toString()
         val priority = sp_current_priorities.selectedItem.toString()
@@ -98,6 +100,7 @@ class UpdateFragment : Fragment() {
         }
     }
 
+    /* ======================== [Top Action Bar] - Delete Current Item ======================== */
     // Show AlertDialog to confirm item removal
     private fun confirmItemRemoval() {
         val builder = AlertDialog.Builder(requireContext())
