@@ -11,7 +11,8 @@
         android:theme="@style/Theme.Online_todo_list_example">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"> <!-- use "android:windowSoftInputMode" to Hide Keyboard -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

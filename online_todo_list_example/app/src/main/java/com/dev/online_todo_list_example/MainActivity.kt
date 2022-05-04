@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.dev.online_todo_list_example.utils.hideKeyboard
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -19,6 +20,9 @@ class MainActivity : AppCompatActivity() {
 
         // Set up the default AppBar to auto change the correct label
         setupActionBarWithNavController(navController)
+
+        // Hide soft Keyboard
+        hideKeyboard(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
