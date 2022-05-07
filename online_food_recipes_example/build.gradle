@@ -5,13 +5,14 @@ buildscript {
         mavenCentral()
         jcenter()
     }
+
     dependencies {
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.4.2'
 
         // Navigation
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.4.2'
 
-        // Hilt
+        // Dagger Hilt
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.5'
     }
 }
