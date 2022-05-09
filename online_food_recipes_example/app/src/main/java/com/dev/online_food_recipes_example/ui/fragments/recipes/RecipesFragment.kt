@@ -1,14 +1,12 @@
 package com.dev.online_food_recipes_example.ui.fragments.recipes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dev.online_food_recipes_example.databinding.FragmentRecipesBinding
@@ -17,6 +15,7 @@ import com.dev.online_food_recipes_example.utils.NetworkResult
 import com.dev.online_food_recipes_example.viewmodels.MainViewModel
 import com.dev.online_food_recipes_example.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
@@ -52,30 +51,80 @@ class RecipesFragment : Fragment() {
 
         setUpRecyclerView(binding.rvRecipes)
 
+        // Fetch Data From Local-Database or Remote-Server
         fetchData()
 
         return binding.root
     }
 
-    // Fetch Data From Server
+    // Fetch Data From Local-Database or Remote-Server
     private fun fetchData() {
+        lifecycleScope.launch {
+            // Always Check the Database in background
+            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner, Observer {
+                // If Database is not Empty, use the Cache Data
+                if (it.isNotEmpty()) {
+                    // Because we have only store one row in Database,
+                    // The index which is 0 is that we need
+                    recipesRVAdapter.setData(it[0].foodRecipe)
+
+                    // Hide the Shimmer Effect
+                    hideShimmerEffect()
+                }
+                // If Database is Empty, fetch the newest Data from Remote-Server
+                else {
+                    requestDataFromRemoteServer()
+                }
+            })
+        }
+    }
+
+    // Custom Function to Fix the Fetch-Data-Twice-Call
+    private fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T) {
+                // The Data is not from the Local access is obtained from the Cloud
+                // we just need Observe the LiveData Object only Once and not Every-Time
+                removeObserver(this)
+                observer.onChanged(t)
+            }
+        })
+    }
+
+    /* ======================== Local ROOM Database ======================== */
+    private fun readDataFromLocalDatabase() {
+        lifecycleScope.launch {
+            mainViewModel.readRecipes.observe(viewLifecycleOwner, Observer {
+                if (it.isNotEmpty()) {
+                    // Because we have only store one row in Database,
+                    // The index which is 0 is that we need
+                    recipesRVAdapter.setData(it[0].foodRecipe)
+                }
+            })
+        }
+    }
+
+    /* ======================== Remote Server ======================== */
+    private fun requestDataFromRemoteServer() {
         mainViewModel.getRecipes(recipeViewModel.setUpQueries())
         mainViewModel.recipesResponse.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is NetworkResult.Loading -> {
-                    showShimmer()
-
+                    showShimmerEffect()
                 }
 
                 is NetworkResult.Success -> {
-                    hideShimmer()
+                    hideShimmerEffect()
                     response.data?.let {
                         recipesRVAdapter.setData(it)
                     }
                 }
 
                 is NetworkResult.Error -> {
-                    hideShimmer()
+                    hideShimmerEffect()
+
+                    // Always Check and Load the previous cache data when NetworkResult.Error
+                    readDataFromLocalDatabase()
 
                     Toast.makeText(
                         requireContext(),
@@ -87,13 +136,13 @@ class RecipesFragment : Fragment() {
         })
     }
 
-    private fun showShimmer() {
+    private fun showShimmerEffect() {
         binding.shimmer.visibility = View.VISIBLE
         binding.rvRecipes.visibility = View.INVISIBLE
         binding.shimmer.showShimmer(true)
     }
 
-    private fun hideShimmer() {
+    private fun hideShimmerEffect() {
         binding.shimmer.stopShimmer()
         binding.shimmer.visibility = View.INVISIBLE
         binding.rvRecipes.visibility = View.VISIBLE
@@ -102,7 +151,7 @@ class RecipesFragment : Fragment() {
     private fun setUpRecyclerView(recyclerView: RecyclerView) {
         recyclerView.adapter = recipesRVAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        showShimmer()
+        showShimmerEffect()
     }
 
 }

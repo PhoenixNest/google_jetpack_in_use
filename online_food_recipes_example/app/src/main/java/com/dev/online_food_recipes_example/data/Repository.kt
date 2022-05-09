@@ -6,7 +6,9 @@ import javax.inject.Inject
 // Scope annotation for bindings that should exist for the life of an activity, surviving configuration.
 @ActivityRetainedScoped
 class Repository @Inject constructor(
-    remoteDatasource: RemoteDatasource
+    remoteDatasource: RemoteDatasource,
+    localDatasource: LocalDatasource
 ) {
     val remote = remoteDatasource
+    val local = localDatasource
 }

@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dev.online_food_recipes_example.data.Repository
+import com.dev.online_food_recipes_example.data.database.entities.RecipesEntity
 import com.dev.online_food_recipes_example.models.FoodRecipe
 import com.dev.online_food_recipes_example.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -22,6 +22,26 @@ class MainViewModel /*@ViewModelInject*/ @Inject constructor(
     application: Application,
     private val repository: Repository
 ) : AndroidViewModel(application) {
+
+    /* ======================== Local ROOM Database ======================== */
+
+    // Cast the Flow-Type into LiveData-Type
+    val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readDatabase().asLiveData()
+
+    // This scope will be canceled when ViewModel will be cleared,
+    // example: ViewModel.onCleared is called
+    private fun insertRecipes(recipesEntity: RecipesEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.local.insertRecipes(recipesEntity)
+        }
+    }
+
+    private fun offlineCacheRecipes(foodRecipesData: FoodRecipe) {
+        val recipesEntity = RecipesEntity(foodRecipesData)
+        insertRecipes(recipesEntity)
+    }
+
+    /* ======================== Remote Server ======================== */
 
     var recipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
 
@@ -39,6 +59,14 @@ class MainViewModel /*@ViewModelInject*/ @Inject constructor(
             try {
                 val response = repository.remote.getRecipes(queries)
                 recipesResponse.value = handleFoodRecipesResponse(response)
+
+                // Save newest Data into Database
+                // Use "!!" to ensure the Data is not null
+                val foodRecipesData = recipesResponse.value!!.data
+                if (foodRecipesData != null) {
+                    offlineCacheRecipes(foodRecipesData)
+                }
+
             } catch (exception: Exception) {
                 recipesResponse.value = NetworkResult.Error(message = "Recipes not found.")
             }

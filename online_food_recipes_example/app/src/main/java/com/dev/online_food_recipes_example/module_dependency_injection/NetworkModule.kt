@@ -1,4 +1,4 @@
-package com.dev.online_food_recipes_example.di
+package com.dev.online_food_recipes_example.module_dependency_injection
 
 import com.dev.online_food_recipes_example.data.network.FoodRecipesApi
 import com.dev.online_food_recipes_example.utils.Constants.Companion.BASE_URL
