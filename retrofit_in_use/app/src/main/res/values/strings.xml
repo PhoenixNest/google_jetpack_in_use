@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Humming Bird</string>
+
+    <string name="pixabay">Pixabay</string>
+    <string name="details">Details</string>
+    <string name="compare">Compare</string>
+    <string name="camera">Camera</string>
+    <string name="disk">Disk</string>
+    <string name="copmress">Copmress</string>
+</resources>
