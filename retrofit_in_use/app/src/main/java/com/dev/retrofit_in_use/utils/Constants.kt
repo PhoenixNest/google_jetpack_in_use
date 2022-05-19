@@ -13,5 +13,8 @@ class Constants {
 
         const val DATABASE_NAME = "pixabay_database"
         const val PIXABAY_TABLE = "pixabay_table"
+
+        const val INTENT_ACTION_SELECT_PHOTO = 100
+        const val INTENT_ACTION_TAKE_PHOTO = 200
     }
 }

@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dev.retrofit_in_use.databinding.FragmentDetailsBinding
+import dagger.hilt.android.scopes.FragmentScoped
 
+@FragmentScoped
 class DetailsFragment : Fragment() {
 
     private var _binding: FragmentDetailsBinding? = null

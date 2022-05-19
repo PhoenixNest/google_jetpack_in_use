@@ -3,8 +3,14 @@ package com.dev.retrofit_in_use.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.dev.retrofit_in_use.utils.Constants
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class PixabayViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class PixabayViewModel @Inject constructor(
+    application: Application
+) : AndroidViewModel(application) {
+
     fun setUpQueries(): Map<String, String> {
         val queries: HashMap<String, String> = HashMap()
 

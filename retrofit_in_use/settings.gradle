@@ -19,7 +19,7 @@ dependencyResolutionManagement {
 rootProject.name = "retrofit_in_use"
 include ':app'
 
-include ':opencv'
+i// include ':opencv'
 
-include ':app', ':Luban-1.1.8'
-include ':Luban'
+// include ':app', ':Luban-1.1.8'
+// include ':Luban'
