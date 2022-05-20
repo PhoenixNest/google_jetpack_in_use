@@ -63,7 +63,7 @@ class MainViewModel @Inject constructor(
                 }
 
             } catch (exception: Exception) {
-                pixabayResponse.value = NetworkResult.Error(message = "Recipes not found.")
+                pixabayResponse.value = NetworkResult.Error(message = "Image not found.")
             }
         } else {
             pixabayResponse.value = NetworkResult.Error(message = "No Internet Connection...")
@@ -85,7 +85,7 @@ class MainViewModel @Inject constructor(
 
             // Response Body is Null or Empty
             response.body()!!.hits.isNullOrEmpty() -> {
-                return NetworkResult.Error(message = "Recipes not found")
+                return NetworkResult.Error(message = "Image not found")
             }
 
             /* ======================== Success ======================== */
