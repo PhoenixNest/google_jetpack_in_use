@@ -76,6 +76,24 @@ class CompareFragment : Fragment() {
         startActivityForResult(intent, Constants.INTENT_ACTION_SELECT_PHOTO)
     }
 
+    // Handle onActivityResult
+    private fun handleDiskResult(data: Intent) {
+        // Bind the Origin Image Data with ViewModel
+        compareViewModel.imageUri = data.data
+
+        binding.imageUri = compareViewModel.imageUri
+        setUpImageView(compareViewModel.imageUri)
+
+        // Origin Image Size
+        val fileSizeFromUri = compareViewModel.getImageSizeFromUri(
+            context = requireContext(),
+            imageUri = compareViewModel.imageUri
+        )
+        setUpOriginTextView(originSizeText = fileSizeFromUri)
+
+        compareViewModel.imageUri?.let { setUpButton(it) }
+    }
+
     /* ======================== [Top Action Bar] - shotPicture ======================== */
     private fun shotPhoto() {
         //
@@ -85,33 +103,34 @@ class CompareFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         // Retrieve Result Successful
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            when (requestCode) {
-                Constants.INTENT_ACTION_SELECT_PHOTO -> {
-                    // Origin Image
-                    compareViewModel.imageUri = data.data
+        if (resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                when (requestCode) {
+                    // Handle Select Photo
+                    Constants.INTENT_ACTION_SELECT_PHOTO -> {
+                        handleDiskResult(data)
+                    }
 
-                    binding.imageUri = compareViewModel.imageUri
-                    setUpImageView(compareViewModel.imageUri)
-
-                    // Origin Image Size
-                    val fileSizeFromUri = compareViewModel.getImageSizeFromUri(
-                        context = requireContext(),
-                        imageUri = compareViewModel.imageUri
-                    )
-                    setUpOriginTextView(originSizeText = fileSizeFromUri)
-
-                    compareViewModel.imageUri?.let { setUpButton(it) }
+                    // Handle Take Photo
+                    Constants.INTENT_ACTION_TAKE_PHOTO -> {
+                        shotPhoto()
+                    }
                 }
-
-                Constants.INTENT_ACTION_TAKE_PHOTO -> {
-                    shotPhoto()
-                }
-
-                else -> {}
+            } else {
+                // Handle No Data
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_no_data),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
-            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+            // Handle Request Code Error
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_request_code),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
