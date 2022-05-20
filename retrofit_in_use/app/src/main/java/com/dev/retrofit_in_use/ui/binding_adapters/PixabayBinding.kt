@@ -14,19 +14,6 @@ class PixabayBinding {
 
     companion object {
 
-        /* ======================== Pixabay ======================== */
-
-        @BindingAdapter("android:navigateToCompareFragment")
-        @JvmStatic
-        fun navigateToCompareFragment(view: FloatingActionButton, navigate: Boolean) {
-            if (navigate) {
-                view.setOnClickListener {
-                    view.findNavController()
-                        .navigate(R.id.action_pixabayFragment_to_compareFragment)
-                }
-            }
-        }
-
         /* ======================== Pixabay RV ======================== */
 
         @BindingAdapter("android:loadImageFromResponse")
@@ -41,7 +28,7 @@ class PixabayBinding {
         @BindingAdapter("android:sendDataToDetailFragment")
         @JvmStatic
         // RV onItemClickListener
-        fun sendDataToUpdateFragment(itemView: ConstraintLayout, currentItem: Hit) {
+        fun sendDataToDetailFragment(itemView: ConstraintLayout, currentItem: Hit) {
             itemView.setOnClickListener {
                 val action =
                     PixabayFragmentDirections.actionPixabayFragmentToDetailsFragment(currentItem)

@@ -3,7 +3,7 @@ package com.dev.retrofit_in_use.utils
 class Constants {
     companion object {
         const val BASE_URL = "https://pixabay.com/"
-        const val API_KEY = "15455499-22cfacf3fc2820d332ff649aa"
+        const val API_KEY = "[Replace by your own key]"
 
         const val QUERY_API_KEY = "key"
         const val QUERY_PARAMETER = "q"
