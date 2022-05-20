@@ -10,4 +10,12 @@
     <string name="error">Error</string>
     <string name="error_no_data">No Receiving Data</string>
     <string name="error_request_code">Request Code Error</string>
+
+    <!--  Permission String  -->
+    <string name="permission_storage_required">Read local-storage access is required to select the image.</string>
+    <string name="permission_storage_granted">Permission is granted. You can select the image now.</string>
+    <string name="permission_camera_required">Camera access is required to display the camera preview.</string>
+    <string name="permission_camera_granted">Permission is granted. You can use the camera now.</string>
+    <string name="ok">OK</string>
+
 </resources>
