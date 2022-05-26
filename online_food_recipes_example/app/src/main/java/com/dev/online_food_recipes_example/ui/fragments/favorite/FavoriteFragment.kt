@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.dev.online_food_recipes_example.databinding.FragmentFavoriteRecipesBinding
+import com.dev.online_food_recipes_example.databinding.FragmentFavoriteBinding
 
-class FavoriteRecipesFragment : Fragment() {
+class FavoriteFragment : Fragment() {
 
-    private var _binding: FragmentFavoriteRecipesBinding? = null
+    private var _binding: FragmentFavoriteBinding? = null
 
     // Make sure we can get the binding Layout
     private val binding get() = _binding!!
@@ -20,12 +20,19 @@ class FavoriteRecipesFragment : Fragment() {
     ): View {
 
         // Inflate the layout for this fragment
-        _binding = FragmentFavoriteRecipesBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        // Set up lifecycleOwner to let the LiveData observe data change
+        // Setup lifecycleOwner to let the LiveData observe data change
         binding.lifecycleOwner = this
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Avoid OOM
+        _binding = null
     }
 
 }

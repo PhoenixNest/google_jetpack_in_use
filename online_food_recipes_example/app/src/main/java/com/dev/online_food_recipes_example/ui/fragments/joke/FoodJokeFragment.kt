@@ -22,10 +22,17 @@ class FoodJokeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentFoodJokeBinding.inflate(inflater, container, false)
 
-        // Set up lifecycleOwner to let the LiveData observe data change
+        // Setup lifecycleOwner to let the LiveData observe data change
         binding.lifecycleOwner = this
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Avoid OOM
+        _binding = null
     }
 
 }

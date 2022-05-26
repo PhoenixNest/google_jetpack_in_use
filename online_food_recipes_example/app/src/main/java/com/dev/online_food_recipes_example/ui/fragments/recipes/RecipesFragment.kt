@@ -46,8 +46,11 @@ class RecipesFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentRecipesBinding.inflate(inflater, container, false)
 
-        // Set up lifecycleOwner to let the LiveData observe data change
+        // Setup lifecycleOwner to let the LiveData observe data change
         binding.lifecycleOwner = this
+
+        // Bind Layout Parameter
+        binding.mainViewModel = mainViewModel
 
         setUpRecyclerView(binding.rvRecipes)
 
@@ -152,6 +155,13 @@ class RecipesFragment : Fragment() {
         recyclerView.adapter = recipesRVAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         showShimmerEffect()
+    }
+
+    override fun onDestroy() {
+        super.onDestroyView()
+
+        // Avoid OOM
+        _binding = null
     }
 
 }
