@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dev.online_food_recipes_example.R
 import com.dev.online_food_recipes_example.databinding.FragmentRecipesBinding
 import com.dev.online_food_recipes_example.ui.fragments.recipes.adapter.RecipesRVAdapter
 import com.dev.online_food_recipes_example.utils.NetworkResult
@@ -19,6 +22,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
+
+    private val args by navArgs<RecipesFragmentArgs>()
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipeViewModel: RecipesViewModel
@@ -57,6 +62,11 @@ class RecipesFragment : Fragment() {
         // Fetch Data From Local-Database or Remote-Server
         fetchData()
 
+        // Handle BottomSheet
+        binding.fbRecipes.setOnClickListener {
+            findNavController().navigate(R.id.action_recipesFragment_to_recipeBottomSheet)
+        }
+
         return binding.root
     }
 
@@ -64,17 +74,18 @@ class RecipesFragment : Fragment() {
     private fun fetchData() {
         lifecycleScope.launch {
             // Always Check the Database in background
-            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner, Observer {
+            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner, Observer { dataBaseList ->
                 // If Database is not Empty, use the Cache Data
-                if (it.isNotEmpty()) {
+                if (dataBaseList.isNotEmpty() && !args.backFromBottomSheet) {
                     // Because we have only store one row in Database,
                     // The index which is 0 is that we need
-                    recipesRVAdapter.setData(it[0].foodRecipe)
+                    recipesRVAdapter.setData(dataBaseList.first().foodRecipe)
 
                     // Hide the Shimmer Effect
                     hideShimmerEffect()
                 }
                 // If Database is Empty, fetch the newest Data from Remote-Server
+                // Also if we navigate back form BottomSheet, Request the new Data again
                 else {
                     requestDataFromRemoteServer()
                 }
@@ -97,11 +108,11 @@ class RecipesFragment : Fragment() {
     /* ======================== Local ROOM Database ======================== */
     private fun readDataFromLocalDatabase() {
         lifecycleScope.launch {
-            mainViewModel.readRecipes.observe(viewLifecycleOwner, Observer {
-                if (it.isNotEmpty()) {
+            mainViewModel.readRecipes.observe(viewLifecycleOwner, Observer { dataBaseList ->
+                if (dataBaseList.isNotEmpty()) {
                     // Because we have only store one row in Database,
                     // The index which is 0 is that we need
-                    recipesRVAdapter.setData(it[0].foodRecipe)
+                    recipesRVAdapter.setData(dataBaseList.first().foodRecipe)
                 }
             })
         }
