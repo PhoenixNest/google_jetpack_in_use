@@ -23,7 +23,7 @@ class MainViewModel /*@ViewModelInject*/ @Inject constructor(
     private val repository: Repository
 ) : AndroidViewModel(application) {
 
-    /* ======================== Local ROOM Database ======================== */
+    /* ======================== Local Room Database ======================== */
 
     // Cast the Flow-Type into LiveData-Type
     val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readDatabase().asLiveData()

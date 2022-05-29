@@ -1,6 +1,7 @@
 package com.dev.online_food_recipes_example.ui.fragments.recipes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dev.online_food_recipes_example.R
 import com.dev.online_food_recipes_example.databinding.FragmentRecipesBinding
 import com.dev.online_food_recipes_example.ui.fragments.recipes.adapter.RecipesRVAdapter
+import com.dev.online_food_recipes_example.utils.NetworkListener
 import com.dev.online_food_recipes_example.utils.NetworkResult
 import com.dev.online_food_recipes_example.viewmodels.MainViewModel
 import com.dev.online_food_recipes_example.viewmodels.RecipesViewModel
@@ -34,6 +36,9 @@ class RecipesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val recipesRVAdapter by lazy { RecipesRVAdapter() }
+
+    // Network Checker
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +64,36 @@ class RecipesFragment : Fragment() {
 
         setUpRecyclerView(binding.rvRecipes)
 
-        // Fetch Data From Local-Database or Remote-Server
-        fetchData()
+        recipeViewModel.readBackOnline.observe(viewLifecycleOwner, Observer {
+            recipeViewModel.backOnline = it
+        })
+
+        /* ======================== Check Network Status ======================== */
+
+        // Always check the network capability in background
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    Log.d("NetworkListener", status.toString())
+
+                    // Show the Error Message when network is unavailable
+                    recipeViewModel.networkStatus = status
+                    recipeViewModel.showNetworkStatus()
+
+                    // Fetch Data From Local-Database or Remote-Server
+                    fetchData()
+                }
+        }
 
         // Handle BottomSheet
         binding.fbRecipes.setOnClickListener {
-            findNavController().navigate(R.id.action_recipesFragment_to_recipeBottomSheet)
+            if (recipeViewModel.networkStatus) {
+                findNavController().navigate(R.id.action_recipesFragment_to_recipeBottomSheet)
+            } else {
+                recipeViewModel.showNetworkStatus()
+            }
         }
 
         return binding.root
@@ -105,7 +134,8 @@ class RecipesFragment : Fragment() {
         })
     }
 
-    /* ======================== Local ROOM Database ======================== */
+    /* ======================== Local Room Database ======================== */
+
     private fun readDataFromLocalDatabase() {
         lifecycleScope.launch {
             mainViewModel.readRecipes.observe(viewLifecycleOwner, Observer { dataBaseList ->
@@ -119,6 +149,7 @@ class RecipesFragment : Fragment() {
     }
 
     /* ======================== Remote Server ======================== */
+
     private fun requestDataFromRemoteServer() {
         mainViewModel.getRecipes(recipeViewModel.setUpQueries())
         mainViewModel.recipesResponse.observe(viewLifecycleOwner, Observer { response ->
@@ -150,6 +181,16 @@ class RecipesFragment : Fragment() {
         })
     }
 
+    /* ======================== RecyclerView ======================== */
+
+    private fun setUpRecyclerView(recyclerView: RecyclerView) {
+        recyclerView.adapter = recipesRVAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        showShimmerEffect()
+    }
+
+    /* ======================== Shimmer ======================== */
+
     private fun showShimmerEffect() {
         binding.shimmer.visibility = View.VISIBLE
         binding.rvRecipes.visibility = View.INVISIBLE
@@ -160,12 +201,6 @@ class RecipesFragment : Fragment() {
         binding.shimmer.stopShimmer()
         binding.shimmer.visibility = View.INVISIBLE
         binding.rvRecipes.visibility = View.VISIBLE
-    }
-
-    private fun setUpRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = recipesRVAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        showShimmerEffect()
     }
 
     override fun onDestroy() {
