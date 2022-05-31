@@ -25,6 +25,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_pixabayFragment_to_videoFragment"
+            app:destination="@id/videoFragment" />
 
     </fragment>
 
@@ -59,6 +62,15 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoFragment"
+        android:name="com.dev.retrofit_in_use.ui.fragments.video.VideoFragment"
+        android:label="VideoFragment"
+        tools:layout="@layout/fragment_video">
+        <action
+            android:id="@+id/action_videoFragment_to_pixabayFragment"
+            app:destination="@id/pixabayFragment" />
     </fragment>
 
 </navigation>

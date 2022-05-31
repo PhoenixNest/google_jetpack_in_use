@@ -1,7 +1,6 @@
 package com.dev.retrofit_in_use.ui.fragments.compare
 
 import android.Manifest
-import android.Manifest.permission_group.STORAGE
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -24,6 +23,7 @@ import com.dev.retrofit_in_use.R
 import com.dev.retrofit_in_use.databinding.FragmentCompareBinding
 import com.dev.retrofit_in_use.utils.Constants
 import com.dev.retrofit_in_use.utils.FileUtil
+import com.dev.retrofit_in_use.utils.WidgetUtil.Companion.showSnackbar
 import com.dev.retrofit_in_use.viewmodel.CompareViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.scopes.FragmentScoped
@@ -38,6 +38,7 @@ import java.io.File
 
 @FragmentScoped
 class CompareFragment : Fragment() {
+
     private var _binding: FragmentCompareBinding? = null
 
     private lateinit var compareViewModel: CompareViewModel
@@ -113,6 +114,8 @@ class CompareFragment : Fragment() {
         // Bind the Origin Image Data with ViewModel
         compareViewModel.imageUri = data.data
 
+        Log.d("Compare Fragment", "Image Uri: ${data.data}")
+
         binding.imageUri = compareViewModel.imageUri
         setUpImageView(compareViewModel.imageUri)
 
@@ -128,6 +131,12 @@ class CompareFragment : Fragment() {
 
     /* ======================== [Top Action Bar] - shotPhoto ======================== */
 
+    private fun shotPhoto() {
+        //
+    }
+
+    /* ======================== Permission ======================== */
+
     // Permission Code Simple copy from https://developer.android.com/codelabs/android-app-permissions
     // Permission Launcher
     private val requestPermissionLauncher = registerForActivityResult(
@@ -137,24 +146,6 @@ class CompareFragment : Fragment() {
             Log.i("Permission: ", "Granted")
         } else {
             Log.i("Permission: ", "Denied")
-        }
-    }
-
-    // Show Permission Snackbar
-    fun View.showSnackbar(
-        view: View,
-        msg: String,
-        length: Int,
-        actionMessage: CharSequence?,
-        action: (View) -> Unit
-    ) {
-        val snackBar = Snackbar.make(view, msg, length)
-        if (actionMessage != null) {
-            snackBar.setAction(actionMessage) {
-                action(this)
-            }.show()
-        } else {
-            snackBar.show()
         }
     }
 
@@ -199,10 +190,6 @@ class CompareFragment : Fragment() {
         }
     }
 
-    private fun shotPhoto() {
-        //
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -238,13 +225,15 @@ class CompareFragment : Fragment() {
         }
     }
 
+    /* ======================== Image Compressor ======================== */
+
     // Image Compress Framework: Compressor By zetbaitsu
     // https://github.com/zetbaitsu/Compressor
     private suspend fun compressImageWithCompressorByZetbaitsu(
         context: Context,
         imageUri: Uri
     ) {
-        val fileByUri = FileUtil.getFileByUri(context, imageUri)
+        val fileByUri = FileUtil.getImageFileByUri(context, imageUri)
 
         // TODO: Code Need to be optimize
         lifecycleScope.launch {
@@ -289,7 +278,7 @@ class CompareFragment : Fragment() {
         context: Context,
         imageUri: Uri
     ) {
-        val fileByUri: File = FileUtil.getFileByUri(context, imageUri)
+        val fileByUri: File = FileUtil.getImageFileByUri(context, imageUri)
 
         lifecycleScope.launch {
             val result = context.let { context ->
@@ -317,6 +306,8 @@ class CompareFragment : Fragment() {
     private fun compressImageBySiliCompressor() {
         // This Function will be removed in the Future
     }
+
+    /* ======================== Ui ======================== */
 
     private fun setUpImageView(imageUri: Uri?) {
         binding.ivCompareOrigin.setImageURI(imageUri)

@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.pixabayFragment,
                 R.id.compareFragment,
+                R.id.videoFragment
             )
         )
 

@@ -3,8 +3,10 @@
 
     <string name="pixabay">Pixabay</string>
     <string name="details">Details</string>
+    <string name="image">Image</string>
     <string name="compare">Compare</string>
     <string name="camera">Camera</string>
+    <string name="video">Video</string>
     <string name="disk">Disk</string>
     <string name="copmress">Copmress</string>
     <string name="error">Error</string>
@@ -12,8 +14,8 @@
     <string name="error_request_code">Request Code Error</string>
 
     <!--  Permission String  -->
-    <string name="permission_storage_required">Read local-storage access is required to select the image.</string>
-    <string name="permission_storage_granted">Permission is granted. You can select the image now.</string>
+    <string name="permission_storage_required">Read local-storage access is required to select the Content.</string>
+    <string name="permission_storage_granted">Permission is granted. You can select the Content now.</string>
     <string name="permission_camera_required">Camera access is required to display the camera preview.</string>
     <string name="permission_camera_granted">Permission is granted. You can use the camera now.</string>
     <string name="ok">OK</string>

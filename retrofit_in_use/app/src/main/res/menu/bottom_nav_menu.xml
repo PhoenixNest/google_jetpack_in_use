@@ -9,6 +9,11 @@
     <item
         android:id="@+id/compareFragment"
         android:icon="@drawable/ic_compare_24"
-        android:title="@string/compare" />
+        android:title="@string/image" />
+
+    <item
+        android:id="@+id/videoFragment"
+        android:icon="@drawable/ic_videocam_24"
+        android:title="@string/video" />
 
 </menu>
